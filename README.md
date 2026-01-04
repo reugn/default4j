@@ -1,5 +1,7 @@
 # default4j
 
+[![Build](https://github.com/reugn/default4j/actions/workflows/build.yml/badge.svg)](https://github.com/reugn/default4j/actions/workflows/build.yml)
+
 Default parameter values for Java via annotation processing.
 
 Java doesn't natively support default parameter values like Scala, Kotlin, or Python.
@@ -159,7 +161,7 @@ Config c2 = ConfigDefaults.create("example.com"); // host="example.com", port=80
 
 ### 1. Method Defaults
 
-Generate overloaded static methods with trailing default parameters.
+Generate overloaded static methods that omit trailing parameters with defaults.
 
 ```java
 public class Greeter {
@@ -250,7 +252,8 @@ User u = UserDefaults.create()
 
 ### 4. Class-Level Annotation
 
-Apply `@WithDefaults` to a class to generate helpers for **all constructors and methods** with default parameters.
+Apply `@WithDefaults` to a class to generate helpers for all constructors and methods that have `@DefaultValue` or
+`@DefaultFactory` parameters.
 
 ```java
 @WithDefaults
@@ -271,8 +274,8 @@ public class Service {
 
 **Generated usage:**
 ```java
-Service s = ServiceDefaults.create();           // All constructor defaults
-ServiceDefaults.process(s);                     // Method with default level
+Service s = ServiceDefaults.create();   // All constructor defaults
+ServiceDefaults.process(s);             // Method with default level
 ```
 
 **With options:**
@@ -375,6 +378,9 @@ public class Client {
 }
 ```
 
+> [!NOTE]
+> For classes outside the current package, use the fully qualified class name (e.g., `com.example.Defaults.TIMEOUT`).
+
 ### 7. Factory Methods
 
 Use `@DefaultFactory` for computed values:
@@ -394,7 +400,7 @@ public class Logger {
 }
 ```
 
-> [!WARNING]
+> [!NOTE]
 > **Evaluation Timing:**
 > - **Non-named mode**: Factory called on each helper method invocation
 > - **Named mode (builder)**: Factory called once at builder creation, not at `call()`/`build()`
@@ -428,6 +434,8 @@ public void request(
 
 ## Supported Types
 
+The following types can be used with `@DefaultValue` string literals:
+
 | Type                  | Example                  |
 |-----------------------|--------------------------|
 | `String`              | `@DefaultValue("hello")` |
@@ -440,6 +448,8 @@ public void request(
 | `short` / `Short`     | `@DefaultValue("100")`   |
 | `char` / `Character`  | `@DefaultValue("x")`     |
 | `null` (for objects)  | `@DefaultValue("null")`  |
+
+For other types, use `@DefaultFactory` or `@DefaultValue(field=...)`.
 
 ---
 
@@ -475,7 +485,7 @@ Specifies the default value for a parameter or record component.
 
 ### `@DefaultFactory`
 
-Specifies a factory method for computed/lazy default values.
+Specifies a factory method for computed default values.
 
 ```java
 @DefaultFactory("createConfig")            // Same-class method
@@ -497,7 +507,8 @@ Generates default helpers for external classes you cannot modify (third-party li
 | `named`      | `boolean`    | `false`    | Generate fluent builder          |
 | `methodName` | `String`     | `"create"` | Factory method name              |
 
-**Use case:** External records/immutables with many parameters that you construct repeatedly with similar values (e.g., test fixtures, configuration objects).
+**Use case:** External records/immutables with many parameters that you construct repeatedly with similar values
+(e.g., test fixtures, configuration objects).
 
 ```java
 // External record from a library (you can't modify this)
