@@ -1,6 +1,8 @@
 # default4j
 
 [![Build](https://github.com/reugn/default4j/actions/workflows/build.yml/badge.svg)](https://github.com/reugn/default4j/actions/workflows/build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.reugn/default4j)](https://central.sonatype.com/artifact/io.github.reugn/default4j)
+[![javadoc](https://javadoc.io/badge2/io.github.reugn/default4j/javadoc.svg)](https://javadoc.io/doc/io.github.reugn/default4j)
 
 Default parameter values for Java via annotation processing.
 
